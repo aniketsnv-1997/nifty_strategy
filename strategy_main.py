@@ -126,7 +126,12 @@ def get_performance(final):
     }
 
     met_df = pd.DataFrame(met_dict, index=[0])
-    return met_df
+
+    tt = met_df.T
+    tt.index.names = ['Performance Metric']
+    tt.rename(columns={0: "Value"}, inplace=True)
+    
+    return tt
 
 
 

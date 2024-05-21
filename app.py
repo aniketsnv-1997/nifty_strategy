@@ -32,8 +32,8 @@ def click_backtest_2():
     st.session_state.but_click_2 = True
 
 @st.cache_data
-def display_df(df):
-    st.dataframe(df.T, use_container_width=True, height=510)
+def display_df(tt):
+    st.dataframe(tt, use_container_width=True, height=510, )
 
 @st.cache_data
 def convert_df(data):
@@ -70,71 +70,100 @@ def main():
         ***Note:*** 1. 200 DMA should be calculated using the data upto the previous day before Friday
     '''
     st.markdown(strategy)
-
-    st.subheader('Strategy backtesting simulator :hammer_and_wrench:', divider='rainbow')
-    st.markdown("You can backtest the strategy on the data starting from Apr 30, 2014 up to May 7, 2024 in a ***side-by-side*** comparative view")
-
-    col1, col2 = st.columns(2, gap="large")
-
-    with col1:
-
-        st.subheader("Combination 1")
-        dma_period = st.select_slider(
-            "DMA lookback period",
-            options=[252, 200, 100, 50, 20],
-            key="com1"
-        )
-        
-        pc_change = st.number_input("% change", min_value=0, max_value=100, key="com_numb_1")
-        
-        run_1 = st.button("Run backtest", key='b1', on_click=click_backtest_1)
-        if run_1 or st.session_state.but_click_1:
-
-            if st.session_state.but_click_2 == True:
-                click_backtest_2()
-
-            result = long_strategy(df, dma_period, pc_change)
-            metrics = get_performance(result)
-            
-            # logic to display and add the functionality to the download button
-            display_df(metrics)
-            result_df = convert_df(result)
-            filename = "trade_log_" + str(dma_period) + "_" + str(pc_change) + ".csv"
-            show_download_button(result_df, filename, "dl_1")
-            
-
-            # st.write(st.session_state)
-        
-            # with st.spinner("Waiting for 3 seconds"):
-            #     time.sleep(3)
     
+    tab1, tab2 = st.tabs(["Backtesting", "Glossary"])
+    
+    with tab1:
+        st.subheader('Strategy backtesting simulator :hammer_and_wrench:', divider='rainbow')
+        st.markdown("You can backtest the strategy on the data starting from Apr 30, 2014 up to May 7, 2024 in a ***side-by-side*** comparative view")
 
-    with col2:
+        col1, col2 = st.columns(2, gap="large")
 
-        st.subheader("Combination 2")
-        dma_period = st.select_slider(
-            "DMA lookback period",
-            options=[252, 200, 100, 50, 20],
-            key="com2"
-        )
-        
-        pc_change = st.number_input("% change", min_value=0, max_value=100, key="com_numb_2")
-        
-        run_2 = st.button("Run backtest", key='b2', on_click=click_backtest_2)
-        if run_2 or st.session_state.but_click_2:
+        with col1:
 
-            if st.session_state.but_click_1 == True:
-                click_backtest_1()
+            st.subheader("Combination 1")
+            dma_period = st.select_slider(
+                "DMA lookback period",
+                options=[252, 200, 100, 50, 20],
+                key="com1"
+            )
             
-            result = long_strategy(df, dma_period, pc_change)
-            metrics = get_performance(result)
-            display_df(metrics)
+            pc_change = st.number_input("% change", min_value=0.0, max_value=100.0, key="com_numb_1", format="%.2f")
             
-            result_df = convert_df(result)
-            filename = "trade_log_" + str(dma_period) + "_" + str(pc_change) + ".csv"
+            run_1 = st.button("Run backtest", key='b1', on_click=click_backtest_1)
+            if run_1 or st.session_state.but_click_1:
 
-            show_download_button(result_df, filename, "dl_2")
+                if st.session_state.but_click_2 == True:
+                    click_backtest_2()
 
+                result = long_strategy(df, dma_period, pc_change)
+                metrics = get_performance(result)
+                
+                # logic to display and add the functionality to the download button
+                display_df(metrics)
+                result_df = convert_df(result)
+                filename = "trade_log_" + str(dma_period) + "_" + str(pc_change) + ".csv"
+                show_download_button(result_df, filename, "dl_1")
+                
+
+                # st.write(st.session_state)
+            
+                # with st.spinner("Waiting for 3 seconds"):
+                #     time.sleep(3)
+        
+
+        with col2:
+
+            st.subheader("Combination 2")
+            dma_period = st.select_slider(
+                "DMA lookback period",
+                options=[252, 200, 100, 50, 20],
+                key="com2"
+            )
+            
+            pc_change = st.number_input("% change", min_value=0.0, max_value=100.0, key="com_numb_2", format="%.2f")
+            
+            run_2 = st.button("Run backtest", key='b2', on_click=click_backtest_2)
+            if run_2 or st.session_state.but_click_2:
+
+                if st.session_state.but_click_1 == True:
+                    click_backtest_1()
+                
+                result = long_strategy(df, dma_period, pc_change)
+                metrics = get_performance(result)
+                display_df(metrics)
+                
+                result_df = convert_df(result)
+                filename = "trade_log_" + str(dma_period) + "_" + str(pc_change) + ".csv"
+
+                show_download_button(result_df, filename, "dl_2")
+
+    with tab2:
+        glossary = '''
+            The interpretation of the performance metrics is as follows:
+            
+            1. Countof Total Trades - Count of all the trades that satisfy the entry criteria
+            2. Count of Total Winning Trades - Count of all the profitable trades 
+            3. % Win Rate - % of winning trades from the total trades
+            4. % Loss Rate - % of losing trades from the total trades
+            5. Average Points - Average points gained from the winning trades
+            5. Median Points - Median points gained from the winning trades
+            6. Total Winning Points - Total of all the points gained from all the profit trades 
+            7. Total Loss Points - Total of all the points lost from all the loss trades
+            8. Max Winning Points - Highest points gained from a profitable trade
+            9. Profit Factor - Ratio of the total points gained to the total points lost
+            10. OAPF (Overall Adjusted Profit Factor) - Profit factor calculated after excluding the maximum poins gained from a single trade.
+            11. Winning Streak - Count of consecutive profit trades
+            12. Losing Streak - Count of consecutive loss trades
+            
+
+            ***Note:*** 
+            1. Profit factor can be considered as the risk:reward ratio
+            2. OAPF highlights whether the profit factor of the strategy is high because of all the trades or only because of the highest gains trade
+
+        '''
+
+        st.markdown(glossary)
             
 main()
 
