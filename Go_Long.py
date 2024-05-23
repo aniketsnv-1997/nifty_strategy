@@ -75,12 +75,15 @@ def main():
         2. The strategy can be experimented by changing the lookback period for DMA and the % change value
     '''
     st.markdown(strategy)
-    
+
     tab1, tab2 = st.tabs(["Backtesting", "Glossary"])
-    
+
     with tab1:
         st.subheader('Strategy backtesting simulator :hammer_and_wrench:', divider='rainbow')
-        st.markdown("You can backtest the strategy on the data starting from Apr 30, 2014 up to May 7, 2024 in a ***side-by-side*** comparative view")
+        st.markdown("""
+            You can backtest the strategy on the data starting from Apr 30, 2014 up to May 7, 2024
+            in a ***side-by-side*** comparative view
+        """)
 
         col1, col2 = st.columns(2, gap="large")
 
