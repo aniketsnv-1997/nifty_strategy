@@ -59,7 +59,7 @@ def show_download_button(result, filename, key_name):
 def main():
     df = data_read()
 
-    st.title('NIFTY Weekend Backtesting: Go Long :dollar: :chart:' )
+    st.title('NIFTY Weekend Backtesting: Go Short :dollar: :chart:' )
 
     strategy = '''
         This app allows you to backtest an ***over the weekend*** strategy for the end user. The rules for the strategy are as follows
@@ -167,7 +167,7 @@ def main():
             11. Winning Streak - Count of consecutive profit trades
             12. Losing Streak - Count of consecutive loss trades
             
-            
+
             ***Note:*** 
             1. Profit factor can be considered as the "risk : reward" ratio
             2. OAPF highlights whether the profit factor of the strategy is high because of all the trades or only because of the highest gains trade
